@@ -1,0 +1,90 @@
+#!/bin/sh
+
+# Author: Alex Ghandhi
+# Last Updated: 14 August 2023
+# SystemVerilog Verible toolchain pre-commit hook
+
+
+# Update verible-filelist
+echo -n "Updating verible-filelist..."
+exec find . -name '*.sv' -o -name '*.svh' -o -name '*.v' | sort > verible.filelist
+git add verible.filelist
+echo -n -e "Success\n"
+
+# Skip checks if tools are not present
+if [[ ! -n $(type -P verible-verilog-format) || ! -n $(type -P verible-verilog-lint) ]] then
+    echo -e "\nFailed to Locate Verible Toolchain"
+    echo "Install Toolchain: https://github.com/chipsalliance/verible"
+    echo -e "\nSkipping formatter/linter checks\n"
+    exit 0
+fi
+
+# Create temporary files to store output and errors
+touch pre_commit_out
+touch pre_commit_errmsg
+
+
+##################
+# Reformat files #
+##################
+
+# Iterate files and run formatter
+for file in $(cat verible.filelist); do
+    echo -n "Reformatting $file..."
+
+    # Check if the file should be ignored
+    if [[ -f verible.filelist.ignore && ! -z $(grep "$file" verible.filelist.ignore) ]] then
+        echo -n -e "Skipped\n"
+    else
+        verible-verilog-format --column_limit 80 --indentation_spaces 4 --inplace $file $file &> pre_commit_out
+        if [[ -s pre_commit_out ]] then
+            echo -n -e "Failed\n"
+        else
+            echo -n -e "Success\n"
+
+            # If the file was staged for commit, stage the formatter changes
+            if [[ ! -z $(git diff --name-only --cached | sed 's/^/\.\//' | grep "$file") ]] then
+                git add "$file"
+            fi
+        fi
+        echo "" > pre_commit_out
+    fi
+done
+
+
+##############
+# Lint Files #
+##############
+
+# Iterate files and run linter
+for file in $(cat verible.filelist); do
+    echo -n "Linting $file..."
+
+    # Check if the file should be ignored
+    if [[ -f verible.filelist.ignore && ! -z $(grep "$file" verible.filelist.ignore) ]] then
+        echo -n -e "Skipped\n"
+    else
+        verible-verilog-lint --rules_config_search $file &> pre_commit_out
+        if [[ -s pre_commit_out ]] then
+            echo -n -e "Failed\n"
+            cat pre_commit_out >> pre_commit_errmsg
+        else
+            echo -n -e "Success\n"
+        fi
+        echo "" > pre_commit_out
+    fi
+done
+
+# If linter errors were detected, print diagnostics and fail
+if [[ -s pre_commit_errmsg ]] then
+    echo -e "\nCommit Failed: Fix Linter Warnings\n"
+    cat pre_commit_errmsg
+    rm pre_commit_out
+    rm pre_commit_errmsg
+    exit 1
+fi
+
+# Remove temporary files
+rm pre_commit_out
+rm pre_commit_errmsg
+exit 0
