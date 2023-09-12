@@ -51,10 +51,10 @@ From the root directory:
 
 ```sh
 # Powershell
-$ cmd /c mklink /h .\.git\hooks\pre-commit .\pre-commit
+$ cmd /c mklink /h .\.git\hooks\pre-commit .\verible-pre-commit
 
 # Bash
-$ ln ./pre-commit ./.git/hooks/pre-commit
+$ ln ./verible-pre-commit ./.git/hooks/pre-commit
 ```
 
 ### verible.filelist
