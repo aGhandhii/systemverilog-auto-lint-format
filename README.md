@@ -1,4 +1,4 @@
-# Development Guide
+# Setup and Usage
 
 ## Verible SystemVerilog Tools
 
