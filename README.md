@@ -18,8 +18,7 @@ System-Specific guides to modifying the PATH variable:
 if(Get-Command verible-verilog-lint && Get-Command verible-verilog-format){"found"}
 
 # Bash
-! $(type -P verible-verilog-lint) || echo "found"
-! $(type -P verible-verilog-format) || echo "found"
+[[ -n $(type -P verible-verilog-format) && -n $(type -P verible-verilog-lint) ]] && echo "found"
 ```
 
 # Working With the Verible Toolchain
