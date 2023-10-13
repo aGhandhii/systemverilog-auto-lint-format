@@ -12,22 +12,27 @@ System-Specific guides to modifying the PATH variable:
 - [WINDOWS](https://www.howtogeek.com/118594/how-to-edit-your-system-path-for-easy-command-line-access/)
 
 ```sh
-# Prints "found" if the command is exposed to PATH
+# Prints "found" if required tools are exposed to PATH
 
 # Powershell
-if(Get-Command verible-verilog-lint){"found"}
+if(Get-Command verible-verilog-lint && Get-Command verible-verilog-format){"found"}
 
 # Bash
 ! $(type -P verible-verilog-lint) || echo "found"
+! $(type -P verible-verilog-format) || echo "found"
 ```
 
-## Working With the Verible Toolchain
+# Working With the Verible Toolchain
 
-### [Linter Options](https://chipsalliance.github.io/verible/verilog_lint.html)
+## Linting
 
-Base options are defined in the [official documentation](https://github.com/chipsalliance/verible/tree/master/verilog/tools/lint). Additional linting preferences are placed in `.rules.verible_lint` in the root directory.
+Default options are defined in the [official documentation](https://github.com/chipsalliance/verible/tree/master/verilog/tools/lint), and the full command list is available at the [verible lint options page.](https://chipsalliance.github.io/verible/verilog_lint.html) 
 
-Example:
+User-defined linting preferences are placed in `.rules.verible_lint` in the base directory of the repository. This file contains a line-separated list of linter options to be added or removed from the linter defaults.
+
+Linter commands to be added have a '+' as a prefix, while linter commands to be removed have a '-' as a prefix.
+
+*Example:*
 ```sh
 # Powershell/Bash
 $ cat .rules.verible_lint
@@ -37,15 +42,26 @@ $ cat .rules.verible_lint
 -generate-label-prefix
 ```
 
-### [Formatter Documentation](https://github.com/chipsalliance/verible/tree/master/verilog/tools/formatter)
+## Formatting
 
-The automatic formatting run by the git hook is set to include `--column_limit 80`, other options can be included for personal testing, but will not be enforced on commits.
+The full list of formatting options is available at the official [Formatter Documentation](https://github.com/chipsalliance/verible/tree/master/verilog/tools/formatter) page. 
+
+User-defined formatter options are placed in `.rules.verible_format` in the base directory of the repository. This file contains a line-separated list of formatter commands to be applied when reformatting code.
+
+*Example:*
+```sh
+# Powershell/Bash
+$ cat .rules.verible_format
+--column-limit 80
+--indentation-spaces 4
+```
+
 
 ## [Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
 
 ### Pre Commit
 
-This repository contains a pre-commit hook that runs automatically before the user adds a commit message. The script will attempt to reformat and lint code, preventing a commit if any errors are encountered.
+This repository contains a pre-commit hook that runs automatically before the user adds a commit message. The script will attempt to reformat and lint all Verilog and SystemVerilog files in the current repository, preventing a commit if any errors are encountered.
 
 To use the script, create a hard link to the appropriate directory.
 

@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Author: Alex Ghandhi
-# Last Updated: 14 August 2023
-# SystemVerilog Verible toolchain pre-commit hook
+# Last Updated: 13 October 2023
+# SystemVerilog Verible pre-commit hook
 
 
 # Update verible-filelist
@@ -36,7 +36,8 @@ for file in $(cat verible.filelist); do
     if [[ -f verible.filelist.ignore && ! -z $(grep "$file" verible.filelist.ignore) ]] then
         echo -n -e "Skipped\n"
     else
-        verible-verilog-format --column_limit 80 --indentation_spaces 4 --inplace $file $file &> pre_commit_out
+        # Apply user-declared formatter options in .rules.verible_format
+        verible-verilog-format $(cat .rules.verible_format | sed -z 's/\n/ /g') --inplace $file $file &> pre_commit_out
         if [[ -s pre_commit_out ]] then
             echo -n -e "Failed\n"
         else
@@ -64,6 +65,7 @@ for file in $(cat verible.filelist); do
     if [[ -f verible.filelist.ignore && ! -z $(grep "$file" verible.filelist.ignore) ]] then
         echo -n -e "Skipped\n"
     else
+        # Apply user-declared linter rules defined in .rules.verible_lint
         verible-verilog-lint --rules_config_search $file &> pre_commit_out
         if [[ -s pre_commit_out ]] then
             echo -n -e "Failed\n"
@@ -84,7 +86,7 @@ if [[ -s pre_commit_errmsg ]] then
     exit 1
 fi
 
-# Remove temporary files
+# No errors detected: Remove temporary files and end the script
 rm pre_commit_out
 rm pre_commit_errmsg
 exit 0
