@@ -1,4 +1,14 @@
-# Setup and Usage
+# Introduction
+
+This repository contains scripts and tools to automatically reformat and lint SystemVerilog and Verilog code using the [Verible Toolchain](https://github.com/chipsalliance/verible/tree/master).
+
+These scripts include:
+- A Git Pre-Commit hook
+- A POSIX compliant shell script for Linux, MacOS, and Git BASH on Windows
+- [ ] A Powershell script for Windows users [Work-In-Progress].
+
+
+# External Requirements
 
 ## Verible SystemVerilog Tools
 
@@ -21,7 +31,8 @@ if(Get-Command verible-verilog-lint && Get-Command verible-verilog-format){"foun
 [[ -n $(type -P verible-verilog-format) && -n $(type -P verible-verilog-lint) ]] && echo "found"
 ```
 
-# Working With the Verible Toolchain
+
+# Setting Linter and Formatter Rules
 
 ## Linting
 
@@ -55,41 +66,7 @@ $ cat .rules.verible_format
 --indentation-spaces 4
 ```
 
-
-## [Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
-
-### Pre Commit
-
-This repository contains a pre-commit hook that runs automatically before the user adds a commit message. The script will attempt to reformat and lint all Verilog and SystemVerilog files in the current repository, preventing a commit if any errors are encountered.
-
-To use the script, create a hard link to the appropriate directory.
-
-From the base directory of the git repository:
-
-```sh
-# Powershell
-cmd /c mklink /h .\.git\hooks\pre-commit .\verible-pre-commit
-
-# Bash
-ln ./verible-pre-commit ./.git/hooks/pre-commit
-```
-
-### verible.filelist
-
-Running the git hook will automatically create or update the `verible.filelist` file. This contains a line-separated list of every `*.v` and `*.sv` file relative to the project's base directory.
-
-```sh
-# Powershell/Bash
-$ cat verible.filelist
-./DE1_SoC.sv
-./test.sv
-./othertest.sv
-./file.v
-```
-The hook relies on this file to apply formatting and linting suggestions: do not remove this file!
-
-The `verible-verilog-ls` Language Server also uses this list to parse files for symbol searching. This tool is optional and not used by the git hook.
-
+## Ignoring Specific Files
 ### verible.filelist.ignore
 
 To prevent the formatting/linting of a specific set of files, one can optionally create the `verible.filelist.ignore` file in the project's base directory. The format of this file (similar to `verible.filelist`) is a line-separated list of the paths of each desired 'ignored' file relative to the project base directory.
@@ -102,6 +79,46 @@ $ cat verible.filelist.ignore
 ./othertest.sv
 ```
 
+
+# Provided Scripts
+
+## Important Note
+
+### verible.filelist
+
+Running any of the provided scripts will automatically create or update the `verible.filelist` file. This contains a line-separated list of every `*.v` and `*.sv` file relative to the project's base directory.
+
+```sh
+# Powershell/Bash
+$ cat verible.filelist
+./DE1_SoC.sv
+./test.sv
+./othertest.sv
+./file.v
+```
+The scripts rely on this file to apply formatting and linting suggestions: do not remove this file!
+
+The `verible-verilog-ls` Language Server also uses this list to parse files for symbol searching. This tool is optional and not used by the scripts.
+
+
+## `verible-pre-commit`
+
+### [More About Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+
+This repository contains a pre-commit hook that runs automatically before the user adds a commit message. The script will attempt to reformat and lint all Verilog and SystemVerilog files in the current repository, preventing a commit if any errors are encountered.
+
+To allow the hook to run automatically, create a hard link to the appropriate directory.
+
+From the base directory of the git repository:
+
+```sh
+# Powershell
+cmd /c mklink /h .\.git\hooks\pre-commit .\verible-pre-commit
+
+# Bash
+ln ./verible-pre-commit ./.git/hooks/pre-commit
+```
+
 ### Overriding Git Hooks
 
 If there are linter/formatter warnings that can be overlooked or ignored, the pre-commit hook can be overwritten with:
@@ -110,3 +127,13 @@ If there are linter/formatter warnings that can be overlooked or ignored, the pr
 # Powershell/Bash
 git commit --no-verify
 ```
+
+## `autolint-posix`
+
+This script runs the automated linting and formatting in a POSIX compliant shell. If an error occurs while reformatting or linting, the output will be sent to `autolint_errors.txt`
+
+## `autolint-windows`
+
+*Note: This is a work in progress, not yet available*
+
+This script runs the automated linting and formatting in Powershell. If an error occurs while reformatting or linting, the output will be sent to `autolint_errors.txt`
