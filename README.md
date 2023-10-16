@@ -5,7 +5,7 @@ This repository contains scripts and tools to automatically reformat and lint Sy
 These scripts include:
 - A Git Pre-Commit hook
 - A POSIX compliant shell script for Linux, MacOS, and Git BASH on Windows
-- [ ] A Powershell script for Windows users [Work-In-Progress].
+- A Powershell script for Windows users
 
 
 # External Requirements
@@ -62,8 +62,8 @@ User-defined formatter options are placed in `.rules.verible_format` in the base
 ```sh
 # Powershell/Bash
 $ cat .rules.verible_format
---column-limit 80
---indentation-spaces 4
+--column_limit 80
+--indentation_spaces 4
 ```
 
 ## Ignoring Specific Files
@@ -133,7 +133,5 @@ git commit --no-verify
 This script runs the automated linting and formatting in a POSIX compliant shell. If an error occurs while reformatting or linting, the output will be sent to `autolint_errors.txt`
 
 ## `autolint-windows`
-
-*Note: This is a work in progress, not yet available*
 
 This script runs the automated linting and formatting in Powershell. If an error occurs while reformatting or linting, the output will be sent to `autolint_errors.txt`

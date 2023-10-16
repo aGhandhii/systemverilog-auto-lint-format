@@ -1,13 +1,12 @@
 #!/bin/sh
 
 # Author: Alex Ghandhi
-# SystemVerilog Verible Auto Formatter/Linter POSIX shell script
+# SystemVerilog Verible Auto Formatter/Linter POSIX Shell Script
 
 
 # Update verible-filelist
 echo -n "Updating verible-filelist..."
 exec find . -name '*.sv' -o -name '*.svh' -o -name '*.v' | sort > verible.filelist
-git add verible.filelist
 echo -n -e "Success\n"
 
 # Skip checks if tools are not present
@@ -19,8 +18,8 @@ if [[ ! -n $(type -P verible-verilog-format) || ! -n $(type -P verible-verilog-l
 fi
 
 # Create temporary files to store output and errors
-touch pre_commit_out
-touch pre_commit_errmsg
+touch scriptOut
+touch scriptError
 
 
 ##################
@@ -36,13 +35,18 @@ for file in $(cat verible.filelist); do
         echo -n -e "Skipped\n"
     else
         # Apply user-declared formatter options in .rules.verible_format
-        verible-verilog-format $(cat .rules.verible_format | sed -z 's/\n/ /g') --inplace $file $file &> pre_commit_out
-        if [[ -s pre_commit_out ]] then
+        if [[ -f .rules.verible_format ]] then
+            params=$(cat .rules.verible_format | sed -z 's/\n/ /g')
+        else
+            params=""
+        fi
+        verible-verilog-format $params --inplace $file $file &> scriptOut
+        if [[ -s scriptOut ]] then
             echo -n -e "Failed\n"
         else
             echo -n -e "Success\n"
         fi
-        echo "" > pre_commit_out
+        echo "" > scriptOut
     fi
 done
 
@@ -60,27 +64,28 @@ for file in $(cat verible.filelist); do
         echo -n -e "Skipped\n"
     else
         # Apply user-declared linter rules defined in .rules.verible_lint
-        verible-verilog-lint --rules_config_search $file &> pre_commit_out
-        if [[ -s pre_commit_out ]] then
+        verible-verilog-lint --rules_config_search $file &> scriptOut
+        if [[ -s scriptOut ]] then
             echo -n -e "Failed\n"
-            cat pre_commit_out >> pre_commit_errmsg
+            cat scriptOut >> scriptError
         else
             echo -n -e "Success\n"
         fi
-        echo "" > pre_commit_out
+        echo "" > scriptOut
     fi
 done
 
 # If linter errors were detected, print diagnostics and fail
-if [[ -s pre_commit_errmsg ]] then
+if [[ -s scriptError ]] then
     echo -e "\nFailed: Fix the following\n"
-    cat pre_commit_errmsg > autolint_errors.txt
-    rm pre_commit_out
-    rm pre_commit_errmsg
+    cat scriptError
+    cat scriptError > autolint_errors.txt
+    rm scriptOut
+    rm scriptError
     exit 1
 fi
 
 # No errors detected: Remove temporary files and end the script
-rm pre_commit_out
-rm pre_commit_errmsg
+rm scriptOut
+rm scriptError
 exit 0

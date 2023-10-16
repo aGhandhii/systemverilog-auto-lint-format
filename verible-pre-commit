@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Author: Alex Ghandhi
-# Last Updated: 13 October 2023
+# Last Updated: 15 October 2023
 # SystemVerilog Verible pre-commit hook
 
 
@@ -37,7 +37,12 @@ for file in $(cat verible.filelist); do
         echo -n -e "Skipped\n"
     else
         # Apply user-declared formatter options in .rules.verible_format
-        verible-verilog-format $(cat .rules.verible_format | sed -z 's/\n/ /g') --inplace $file $file &> pre_commit_out
+        if [[ -f .rules.verible_format ]] then
+            params=$(cat .rules.verible_format | sed -z 's/\n/ /g')
+        else
+            params=""
+        fi
+        verible-verilog-format $params --inplace $file $file &> pre_commit_out
         if [[ -s pre_commit_out ]] then
             echo -n -e "Failed\n"
         else
