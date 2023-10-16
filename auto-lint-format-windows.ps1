@@ -13,6 +13,9 @@ if( (-not (Get-Command verible-verilog-lint)) -or (-not (Get-Command verible-ver
     Write-Host "Failed to Locate Verible Toolchain"
     Write-Host "Install Toolchain: https://github.com/chipsalliance/verible"
     Write-Host "Skipping formatter/linter checks"
+    Write-Host ""
+    Write-Host "Press any key to continue..."
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     Exit 0
 }
 
@@ -85,10 +88,16 @@ if (Get-Content '.\scriptError') {
     Get-Content scriptError *> autolint_errors.txt
     Remove-Item scriptOut
     Remove-Item scriptError
+    Write-Host ""
+    Write-Host "Press any key to continue..."
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     Exit 1
 }
 
 # No errors detected: Remove temporary files and end the script
 Remove-Item scriptOut
 Remove-Item scriptError
-Exit 1
+Write-Host ""
+Write-Host "Press any key to continue..."
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+Exit 0

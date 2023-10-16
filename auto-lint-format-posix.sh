@@ -14,6 +14,7 @@ if [[ ! -n $(type -P verible-verilog-format) || ! -n $(type -P verible-verilog-l
     echo -e "\nFailed to Locate Verible Toolchain"
     echo "Install Toolchain: https://github.com/chipsalliance/verible"
     echo -e "\nSkipping formatter/linter checks\n"
+    read -p "Press any key to exit" -n 1 -r
     exit 0
 fi
 
@@ -82,10 +83,14 @@ if [[ -s scriptError ]] then
     cat scriptError > autolint_errors.txt
     rm scriptOut
     rm scriptError
+    echo -e "\n"
+    read -p "Press any key to exit" -n 1 -r
     exit 1
 fi
 
 # No errors detected: Remove temporary files and end the script
 rm scriptOut
 rm scriptError
+echo -e "\n"
+read -p "Press any key to exit" -n 1 -r
 exit 0
