@@ -3,8 +3,8 @@
 This repository contains scripts and tools to automatically reformat and lint SystemVerilog and Verilog code using the [Verible Toolchain](https://github.com/chipsalliance/verible/tree/master).
 
 These scripts include:
-- A Git Pre-Commit hook: `verible-pre-commit`
-- A POSIX compliant shell script for Linux, MacOS, and Unix-like shells on Windows: `auto-lint-format-posix`
+- A Git Pre-Commit hook: `auto-lint-format-pre-commit`
+- A POSIX compliant shell script for Linux, MacOS, and POSIX-like shells on Windows: `auto-lint-format-posix`
 - A Powershell script for Windows users: `auto-lint-format-windows`
 
 
@@ -41,7 +41,7 @@ Default options are defined in the [official documentation](https://github.com/c
 
 User-defined linting preferences are placed in `.rules.verible_lint` in the base directory of the repository. This file contains a line-separated list of linter options to be added or removed from the linter defaults.
 
-Linter commands to be added have a '+' as a prefix, while linter commands to be removed have a '-' as a prefix.
+Linter commands to be added to the defaults have a '+' as a prefix, while linter commands to be removed have a '-' as a prefix.
 
 *Example:*
 ```sh
@@ -102,7 +102,7 @@ The scripts rely on this file to apply formatting and linting suggestions: do no
 The `verible-verilog-ls` Language Server also uses this list to parse files for symbol searching. This tool is optional and not used by the scripts.
 
 
-## `verible-pre-commit`
+## `auto-lint-format-pre-commit`
 
 ### [More About Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
 
@@ -114,10 +114,10 @@ From the base directory of the git repository:
 
 ```sh
 # Powershell
-cmd /c mklink /h .\.git\hooks\pre-commit .\verible-pre-commit
+cmd /c mklink /h .\.git\hooks\pre-commit .\auto-lint-format-pre-commit
 
 # Bash
-ln ./verible-pre-commit ./.git/hooks/pre-commit
+ln ./auto-lint-format-pre-commit ./.git/hooks/pre-commit
 ```
 
 ### Overriding Git Hooks
