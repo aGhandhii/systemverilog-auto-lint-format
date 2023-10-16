@@ -3,9 +3,9 @@
 This repository contains scripts and tools to automatically reformat and lint SystemVerilog and Verilog code using the [Verible Toolchain](https://github.com/chipsalliance/verible/tree/master).
 
 These scripts include:
-- A Git Pre-Commit hook
-- A POSIX compliant shell script for Linux, MacOS, and Git BASH on Windows
-- A Powershell script for Windows users
+- A Git Pre-Commit hook: `verible-pre-commit`
+- A POSIX compliant shell script for Linux, MacOS, and Unix-like shells on Windows: `auto-lint-format-posix`
+- A Powershell script for Windows users: `auto-lint-format-windows`
 
 
 # External Requirements
@@ -128,10 +128,10 @@ If there are linter/formatter warnings that can be overlooked or ignored, the pr
 git commit --no-verify
 ```
 
-## `autolint-posix`
+## `auto-lint-format-posix`
 
 This script runs the automated linting and formatting in a POSIX compliant shell. If an error occurs while reformatting or linting, the output will be sent to `autolint_errors.txt`
 
-## `autolint-windows`
+## `auto-lint-format-windows`
 
 This script runs the automated linting and formatting in Powershell. If an error occurs while reformatting or linting, the output will be sent to `autolint_errors.txt`
