@@ -14,8 +14,9 @@ These scripts include:
 
 - Install the [Verible Toolchain](https://github.com/chipsalliance/verible/tree/master) for your operating system
     - [Releases](https://github.com/chipsalliance/verible/releases)
-- Make sure the verible tools are exposed to PATH
-    - This is accomplished by adding the verible directory to PATH
+- Make sure the following Verible tools are exposed to PATH
+    - `verible-verilog-lint`
+    - `verible-verilog-format`
 
 System-Specific guides to modifying the PATH variable:
 - [POSIX](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path)  
