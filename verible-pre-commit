@@ -1,7 +1,6 @@
 #!/bin/sh
 
 # Author: Alex Ghandhi
-# Last Updated: 15 October 2023
 # SystemVerilog Verible pre-commit hook
 
 
@@ -20,8 +19,8 @@ if [[ ! -n $(type -P verible-verilog-format) || ! -n $(type -P verible-verilog-l
 fi
 
 # Create temporary files to store output and errors
-touch pre_commit_out
-touch pre_commit_errmsg
+touch scriptOut
+touch scriptError
 
 
 ##################
@@ -42,8 +41,8 @@ for file in $(cat verible.filelist); do
         else
             params=""
         fi
-        verible-verilog-format $params --inplace $file $file &> pre_commit_out
-        if [[ -s pre_commit_out ]] then
+        verible-verilog-format $params --inplace $file $file &> scriptOut
+        if [[ -s scriptOut ]] then
             echo -n -e "Failed\n"
         else
             echo -n -e "Success\n"
@@ -53,7 +52,7 @@ for file in $(cat verible.filelist); do
                 git add "$file"
             fi
         fi
-        echo "" > pre_commit_out
+        echo "" > scriptOut
     fi
 done
 
@@ -71,27 +70,27 @@ for file in $(cat verible.filelist); do
         echo -n -e "Skipped\n"
     else
         # Apply user-declared linter rules defined in .rules.verible_lint
-        verible-verilog-lint --rules_config_search $file &> pre_commit_out
-        if [[ -s pre_commit_out ]] then
+        verible-verilog-lint --rules_config_search $file &> scriptOut
+        if [[ -s scriptOut ]] then
             echo -n -e "Failed\n"
-            cat pre_commit_out >> pre_commit_errmsg
+            cat scriptOut >> scriptError
         else
             echo -n -e "Success\n"
         fi
-        echo "" > pre_commit_out
+        echo "" > scriptOut
     fi
 done
 
 # If linter errors were detected, print diagnostics and fail
-if [[ -s pre_commit_errmsg ]] then
+if [[ -s scriptError ]] then
     echo -e "\nCommit Failed: Fix Linter Warnings\n"
-    cat pre_commit_errmsg
-    rm pre_commit_out
-    rm pre_commit_errmsg
+    cat scriptError
+    rm scriptOut
+    rm scriptError
     exit 1
 fi
 
 # No errors detected: Remove temporary files and end the script
-rm pre_commit_out
-rm pre_commit_errmsg
+rm scriptOut
+rm scriptError
 exit 0
