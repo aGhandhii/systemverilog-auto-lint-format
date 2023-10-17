@@ -5,7 +5,9 @@ Author: Alex Ghandhi
 
 # Update verible-filelist
 Write-Host -NoNewline "Updating verible-filelist..."
-Get-ChildItem -Path . -Filter *.sv -Recurse -Name | %{$_ -replace '.*\.', './$&'} > verible.filelist
+Get-ChildItem -Path . -Filter *.v -Recurse -Name | %{$_ -replace '.*\.', './$&'} > verible.filelist
+Get-ChildItem -Path . -Filter *.sv -Recurse -Name | %{$_ -replace '.*\.', './$&'} >> verible.filelist
+Get-ChildItem -Path . -Filter *.svh -Recurse -Name | %{$_ -replace '.*\.', './$&'} >> verible.filelist
 Write-Host "Success"
 
 # Skip checks if tools are not present
@@ -71,7 +73,7 @@ foreach ($file in Get-Content .\verible.filelist) {
         #Get-Content -Path '.\scriptOut'
         if (Get-Content .\scriptOut) {
             Write-Host "Failed"
-            Get-Content .\scriptOut *> scriptError
+            Get-Content .\scriptOut *>> scriptError
         } else {
             Write-Host "Success"
         }
