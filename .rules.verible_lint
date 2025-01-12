@@ -6,5 +6,4 @@
 -typedef-enums
 -unpacked-dimensions-range-ordering
 -invalid-system-task-function
--function-task-explicit-lifetime
 -package-filename
