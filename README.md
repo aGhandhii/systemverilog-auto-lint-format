@@ -1,25 +1,10 @@
-# Table of Contents
-- [Introduction](#introduction)
-- [External Requirements](#external-requirements)
-    - [Verible SystemVerilog Tools](#verible-systemverilog-tools)
-- [Script Configuration](#script-configuration)
-    - [Important Note](#important-note)
-    - [Linting](#linting)
-    - [Formatting](#formatting)
-    - [Ignoring Specific Files](#ignoring-specific-files)
-- [Provided Scripts](#provided-scripts)
-    - [Pre Commit](#pre-commit)
-    - [POSIX](#posix)
-    - [PowerShell](#powershell)
-
-
 # Introduction
 
 This repository contains scripts and tools to automatically reformat and lint SystemVerilog and Verilog code using the [Verible Toolchain](https://github.com/chipsalliance/verible/tree/master).
 
 These scripts include:
 - A Git Pre-Commit hook: `auto-lint-format-pre-commit`
-- A POSIX compliant shell script for Linux, MacOS, and POSIX-like shells on Windows: `auto-lint-format-posix`
+- A Unix shell script for UNIX-like shells: `auto-lint-format-unix`
 - A Powershell script for Windows users: `auto-lint-format-windows`
 
 # External Requirements
@@ -33,7 +18,7 @@ These scripts include:
     - `verible-verilog-format`
 
 System-Specific guides to modifying the PATH variable:
-- [POSIX](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path)  
+- [UNIX](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path)  
 - [WINDOWS](https://www.howtogeek.com/118594/how-to-edit-your-system-path-for-easy-command-line-access/)
 
 ```sh
@@ -139,11 +124,11 @@ git commit --no-verify
 ```
 Additional Resources: [More About Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
 
-## POSIX
+## UNIX
 
-Filename: `auto-lint-format-posix.sh`
+Filename: `auto-lint-format-unix.sh`
 
-This script runs the automated linting and formatting in a POSIX compliant shell. If an error occurs while reformatting or linting, the output will be sent to `autolint_errors.txt`
+This script runs the automated linting and formatting in a UNIX compliant shell. If an error occurs while reformatting or linting, the output will be sent to `autolint_errors.txt`
 
 ## PowerShell
 

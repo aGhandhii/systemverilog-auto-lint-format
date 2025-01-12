@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Author: Alex Ghandhi
-# SystemVerilog Verible Auto Formatter/Linter POSIX Shell Script
+# SystemVerilog Verible Auto Formatter/Linter UNIX Shell Script
 
 
 # Update verible-filelist
